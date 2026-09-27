@@ -17,4 +17,12 @@ A Python terminal application that searches YouTube and downloads videos or audi
 ## Installation
 
 ```bash
+git clone https://github.com/luciushimesh07/youtube-search-downloader.git
+cd youtube-search-downloader
+Create their own environment:
+python3 -m venv venv
+source venv/bin/activate
+Install your package:
 pip install -e .
+Then:
+youtube-downloader
