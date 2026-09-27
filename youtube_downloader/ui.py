@@ -2,12 +2,13 @@ from .search import search_youtube
 from .downloader import (
     download_video,
     download_audio,
-    download_video_only
+    download_video_only,
 )
 from .formatter import (
     format_views,
-    format_duration
+    format_duration,
 )
+from .environment import check_environment
 
 
 def choose_quality():
@@ -29,7 +30,7 @@ def choose_quality():
         "2": "1080",
         "3": "720",
         "4": "480",
-        "5": "360"
+        "5": "360",
     }
 
     while True:
@@ -39,7 +40,7 @@ def choose_quality():
         if choice in qualities:
             return qualities[choice]
 
-        print("❌ Invalid option. Try again.")
+        print("❌ Invalid option.")
 
 
 def choose_download_type(url):
@@ -58,44 +59,76 @@ def choose_download_type(url):
 
         choice = input("Enter option: ").strip()
 
-        if choice == "1":
+        try:
 
-            quality = choose_quality()
+            if choice == "1":
 
-            print("\nStarting video + audio download...\n")
+                quality = choose_quality()
 
-            download_video(url, quality)
+                print(
+                    "\n⬇️ Downloading video + audio...\n"
+                )
+
+                download_video(url, quality)
+
+                return
+
+            if choice == "2":
+
+                print(
+                    "\n⬇️ Downloading audio...\n"
+                )
+
+                download_audio(url)
+
+                return
+
+            if choice == "3":
+
+                quality = choose_quality()
+
+                print(
+                    "\n⬇️ Downloading video...\n"
+                )
+
+                download_video_only(
+                    url,
+                    quality
+                )
+
+                return
+
+            print("❌ Choose 1, 2 or 3.")
+
+        except Exception as error:
+
+            print("\n❌ Download failed:")
+            print(error)
 
             return
-
-        elif choice == "2":
-
-            print("\nStarting audio download...\n")
-
-            download_audio(url)
-
-            return
-
-        elif choice == "3":
-
-            quality = choose_quality()
-
-            print("\nStarting video-only download...\n")
-
-            download_video_only(url, quality)
-
-            return
-
-        else:
-
-            print("❌ Invalid option. Please choose 1, 2 or 3.")
 
 
 def start():
 
     print("=" * 70)
-    print("                 YOUTUBE SEARCH DOWNLOADER")
+    print("              YOUTUBE SEARCH DOWNLOADER")
     print("=" * 70)
+
+    try:
+
+        environment = check_environment()
+
+        print(
+            f"\nSystem: "
+            f"{environment['operating_system']}"
+        )
+
+    except Exception as error:
+
+        print("\n❌ Environment setup failed:")
+        print(error)
+
+        return
 
     query = input(
         "\nEnter YouTube search title: "
@@ -103,25 +136,33 @@ def start():
 
     if not query:
 
-        print("\n❌ Search title cannot be empty.")
+        print("❌ Search title cannot be empty.")
+
         return
 
     print("\n🔎 Searching YouTube...\n")
 
     try:
 
-        videos = search_youtube(query)
+        videos = search_youtube(
+            query,
+            limit=20
+        )
 
         if not videos:
 
             print("❌ No videos found.")
+
             return
 
         print("=" * 70)
-        print("SEARCH RESULTS")
+        print("RESULTS — SORTED BY VIEW COUNT")
         print("=" * 70)
 
-        for i, video in enumerate(videos, start=1):
+        for index, video in enumerate(
+            videos,
+            start=1
+        ):
 
             title = video.get(
                 "title",
@@ -145,15 +186,15 @@ def start():
             video_id = video.get("id")
 
             url = (
-                f"https://www.youtube.com/watch?v="
-                f"{video_id}"
+                "https://www.youtube.com/watch?v="
+                + video_id
             )
 
-            print(f"\n[{i}] {title}")
-            print(f"    Channel  : {channel}")
-            print(f"    Views    : {views}")
-            print(f"    Duration : {duration}")
-            print(f"    URL      : {url}")
+            print(f"\n[{index}] {title}")
+            print(f"    👤 Channel  : {channel}")
+            print(f"    👁 Views    : {views}")
+            print(f"    ⏱ Duration : {duration}")
+            print(f"    🔗 URL      : {url}")
 
         print("\n" + "=" * 70)
 
@@ -165,26 +206,26 @@ def start():
 
             if not choice.isdigit():
 
-                print("❌ Please enter a number.")
+                print("❌ Enter a number.")
+
                 continue
 
             choice = int(choice)
 
             if 1 <= choice <= len(videos):
+
                 break
 
             print(
-                f"❌ Select a number between "
-                f"1 and {len(videos)}."
+                f"❌ Choose between 1 and "
+                f"{len(videos)}."
             )
 
-        selected_video = videos[choice - 1]
-
-        selected_id = selected_video.get("id")
+        selected = videos[choice - 1]
 
         selected_url = (
-            f"https://www.youtube.com/watch?v="
-            f"{selected_id}"
+            "https://www.youtube.com/watch?v="
+            + selected["id"]
         )
 
         print("\n" + "=" * 70)
@@ -192,22 +233,22 @@ def start():
         print("=" * 70)
 
         print(
-            f"\nTitle: {selected_video.get('title')}"
+            f"\nTitle: {selected.get('title')}"
         )
 
-        print(f"URL: {selected_url}")
-
-        choose_download_type(selected_url)
+        choose_download_type(
+            selected_url
+        )
 
         print("\n" + "=" * 70)
-        print("✅ DOWNLOAD FINISHED")
+        print("✅ FINISHED")
         print("=" * 70)
 
         print(
-            "\nYour files are in: ./downloads/"
+            "\nFiles are saved in ./downloads/"
         )
 
-    except Exception as e:
+    except Exception as error:
 
         print("\n❌ Something went wrong:")
-        print(e)
+        print(error)
