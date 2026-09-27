@@ -1,9 +1,7 @@
 import os
-
 import yt_dlp
 
-from .environment import get_ffmpeg_path
-
+from .environment import get_ffmpeg_paths
 
 DOWNLOAD_FOLDER = "downloads"
 
