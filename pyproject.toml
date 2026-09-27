@@ -5,13 +5,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "youtube-search-downloader"
-version = "0.1.0"
-description = "A terminal-based YouTube search and downloader"
+version = "1.0.0"
+description = "Cross-platform terminal YouTube search and downloader"
 readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    "yt-dlp"
+    "yt-dlp>=2026.1.0",
+    "imageio-ffmpeg>=0.6.0"
 ]
 
 
