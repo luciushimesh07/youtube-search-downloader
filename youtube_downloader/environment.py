@@ -1,3 +1,4 @@
+import os
 import platform
 import shutil
 
@@ -20,15 +21,6 @@ def get_operating_system():
 
 
 def get_ffmpeg_paths():
-    """
-    Return paths to both FFmpeg and FFprobe.
-
-    If the user already has FFmpeg installed,
-    use the system versions.
-
-    Otherwise static-ffmpeg downloads/provides
-    the appropriate platform binaries.
-    """
 
     system_ffmpeg = shutil.which("ffmpeg")
     system_ffprobe = shutil.which("ffprobe")
@@ -37,6 +29,7 @@ def get_ffmpeg_paths():
         return system_ffmpeg, system_ffprobe
 
     try:
+
         ffmpeg, ffprobe = (
             run.get_or_fetch_platform_executables_else_raise()
         )
@@ -44,9 +37,26 @@ def get_ffmpeg_paths():
         return ffmpeg, ffprobe
 
     except Exception as error:
+
         raise RuntimeError(
             "FFmpeg/FFprobe could not be installed automatically."
         ) from error
+
+
+def get_ffmpeg_directory():
+
+    ffmpeg, ffprobe = get_ffmpeg_paths()
+
+    ffmpeg_dir = os.path.dirname(ffmpeg)
+
+    if os.path.dirname(ffprobe) != ffmpeg_dir:
+
+        raise RuntimeError(
+            "FFmpeg and FFprobe are located "
+            "in different directories."
+        )
+
+    return ffmpeg_dir
 
 
 def check_environment():
