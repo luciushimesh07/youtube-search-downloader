@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "youtube-search-downloader"
+version = "0.1.0"
+description = "A terminal-based YouTube search and downloader"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "yt-dlp"
+]
+
+
+[project.scripts]
+youtube-downloader = "youtube_downloader.ui:start"
+
+
+[tool.setuptools.packages.find]
+include = ["youtube_downloader*"]
