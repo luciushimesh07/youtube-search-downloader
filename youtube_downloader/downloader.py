@@ -1,5 +1,8 @@
 import os
+
 import yt_dlp
+
+from .environment import get_ffmpeg_path
 
 
 DOWNLOAD_FOLDER = "downloads"
@@ -8,6 +11,8 @@ DOWNLOAD_FOLDER = "downloads"
 def download_video(url, quality):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+
+    ffmpeg_path = get_ffmpeg_path()
 
     if quality == "best":
 
@@ -21,6 +26,7 @@ def download_video(url, quality):
         )
 
     options = {
+
         "format": format_string,
 
         "outtmpl": (
@@ -30,7 +36,9 @@ def download_video(url, quality):
 
         "merge_output_format": "mp4",
 
-        "noplaylist": True
+        "ffmpeg_location": ffmpeg_path,
+
+        "noplaylist": True,
     }
 
     with yt_dlp.YoutubeDL(options) as ydl:
@@ -41,6 +49,8 @@ def download_audio(url):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
+    ffmpeg_path = get_ffmpeg_path()
+
     options = {
 
         "format": "bestaudio/best",
@@ -50,15 +60,17 @@ def download_audio(url):
             "%(title)s.%(ext)s"
         ),
 
+        "ffmpeg_location": ffmpeg_path,
+
         "noplaylist": True,
 
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
                 "preferredcodec": "mp3",
-                "preferredquality": "192"
+                "preferredquality": "192",
             }
-        ]
+        ],
     }
 
     with yt_dlp.YoutubeDL(options) as ydl:
@@ -69,17 +81,18 @@ def download_video_only(url, quality):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
+    ffmpeg_path = get_ffmpeg_path()
+
     if quality == "best":
 
         format_string = "bv*"
 
     else:
 
-        format_string = (
-            f"bv*[height<={quality}]"
-        )
+        format_string = f"bv*[height<={quality}]"
 
     options = {
+
         "format": format_string,
 
         "outtmpl": (
@@ -87,7 +100,9 @@ def download_video_only(url, quality):
             "%(title)s.%(ext)s"
         ),
 
-        "noplaylist": True
+        "ffmpeg_location": ffmpeg_path,
+
+        "noplaylist": True,
     }
 
     with yt_dlp.YoutubeDL(options) as ydl:
