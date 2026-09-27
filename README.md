@@ -17,12 +17,36 @@ A Python terminal application that searches YouTube and downloads videos or audi
 ## Installation
 
 ```bash
-git clone https://github.com/luciushimesh07/youtube-search-downloader.git
+# YouTube Search Downloader
+
+A cross-platform terminal YouTube search and downloader.
+
+## Requirements
+
+- Python 3.10 or newer
+- Internet connection
+
+FFmpeg does not need to be installed separately.
+The package manages its FFmpeg dependency through
+`imageio-ffmpeg`.
+
+## Installation
+
+Clone the repository:
+for macos
+
+git clone https://github.com/YOUR_USERNAME/youtube-search-downloader.git
 cd youtube-search-downloader
-Create their own environment:
 python3 -m venv venv
 source venv/bin/activate
-Install your package:
-pip install -e .
-Then:
+pip install .
+youtube-downloader
+
+Windows
+
+git clone https://github.com/YOUR_USERNAME/youtube-search-downloader.git
+cd youtube-search-downloader
+python -m venv venv
+venv\Scripts\activate
+pip install .
 youtube-downloader
