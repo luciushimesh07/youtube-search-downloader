@@ -1,4 +1,5 @@
 def format_views(views):
+
     if views is None:
         return "Unknown"
 
@@ -15,6 +16,7 @@ def format_views(views):
 
 
 def format_duration(seconds):
+
     if not seconds:
         return "Unknown"
 
@@ -24,7 +26,7 @@ def format_duration(seconds):
     minutes = (seconds % 3600) // 60
     seconds = seconds % 60
 
-    if hours > 0:
+    if hours:
         return f"{hours}:{minutes:02d}:{seconds:02d}"
 
     return f"{minutes}:{seconds:02d}"
