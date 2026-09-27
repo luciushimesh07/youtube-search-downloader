@@ -1,7 +1,9 @@
 import os
+
 import yt_dlp
 
-from .environment import get_ffmpeg_paths
+from .environment import get_ffmpeg_directory
+
 
 DOWNLOAD_FOLDER = "downloads"
 
@@ -10,7 +12,9 @@ def download_video(url, quality):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-    ffmpeg_path = get_ffmpeg_path()
+    # Get the directory containing both
+    # ffmpeg and ffprobe.
+    ffmpeg_directory = get_ffmpeg_directory()
 
     if quality == "best":
 
@@ -24,7 +28,6 @@ def download_video(url, quality):
         )
 
     options = {
-
         "format": format_string,
 
         "outtmpl": (
@@ -32,9 +35,10 @@ def download_video(url, quality):
             "%(title)s.%(ext)s"
         ),
 
-        "merge_output_format": "mp4",
+        # Tell yt-dlp where FFmpeg and FFprobe are.
+        "ffmpeg_location": ffmpeg_directory,
 
-        "ffmpeg_location": ffmpeg_path,
+        "merge_output_format": "mp4",
 
         "noplaylist": True,
     }
@@ -47,10 +51,11 @@ def download_audio(url):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-    ffmpeg_path = get_ffmpeg_path()
+    # Get the directory containing both
+    # ffmpeg and ffprobe.
+    ffmpeg_directory = get_ffmpeg_directory()
 
     options = {
-
         "format": "bestaudio/best",
 
         "outtmpl": (
@@ -58,7 +63,7 @@ def download_audio(url):
             "%(title)s.%(ext)s"
         ),
 
-        "ffmpeg_location": ffmpeg_path,
+        "ffmpeg_location": ffmpeg_directory,
 
         "noplaylist": True,
 
@@ -79,7 +84,10 @@ def download_video_only(url, quality):
 
     os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-    ffmpeg_path = get_ffmpeg_path()
+    # Video-only doesn't normally require merging,
+    # but using the same environment keeps the
+    # downloader consistent.
+    ffmpeg_directory = get_ffmpeg_directory()
 
     if quality == "best":
 
@@ -87,10 +95,11 @@ def download_video_only(url, quality):
 
     else:
 
-        format_string = f"bv*[height<={quality}]"
+        format_string = (
+            f"bv*[height<={quality}]"
+        )
 
     options = {
-
         "format": format_string,
 
         "outtmpl": (
@@ -98,7 +107,7 @@ def download_video_only(url, quality):
             "%(title)s.%(ext)s"
         ),
 
-        "ffmpeg_location": ffmpeg_path,
+        "ffmpeg_location": ffmpeg_directory,
 
         "noplaylist": True,
     }
