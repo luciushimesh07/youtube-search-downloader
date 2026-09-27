@@ -35,7 +35,7 @@ The package manages its FFmpeg dependency through
 Clone the repository:
 for macos
 
-git clone https://github.com/YOUR_USERNAME/youtube-search-downloader.git
+git clone https://github.com/luciushimesh07/youtube-search-downloader.git
 cd youtube-search-downloader
 python3 -m venv venv
 source venv/bin/activate
@@ -44,7 +44,7 @@ youtube-downloader
 
 Windows
 
-git clone https://github.com/YOUR_USERNAME/youtube-search-downloader.git
+git clone https://github.com/luciushimesh07/youtube-search-downloader.git
 cd youtube-search-downloader
 python -m venv venv
 venv\Scripts\activate
