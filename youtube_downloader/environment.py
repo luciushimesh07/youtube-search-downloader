@@ -1,7 +1,7 @@
 import platform
 import shutil
 
-import imageio_ffmpeg
+from static_ffmpeg import run
 
 
 def get_operating_system():
@@ -19,34 +19,42 @@ def get_operating_system():
     return system
 
 
-def find_system_ffmpeg():
-    return shutil.which("ffmpeg")
-
-
-def get_ffmpeg_path():
+def get_ffmpeg_paths():
     """
-    Use a system FFmpeg if available.
-    Otherwise use the FFmpeg executable
-    supplied through imageio-ffmpeg.
+    Return paths to both FFmpeg and FFprobe.
+
+    If the user already has FFmpeg installed,
+    use the system versions.
+
+    Otherwise static-ffmpeg downloads/provides
+    the appropriate platform binaries.
     """
 
-    system_ffmpeg = find_system_ffmpeg()
+    system_ffmpeg = shutil.which("ffmpeg")
+    system_ffprobe = shutil.which("ffprobe")
 
-    if system_ffmpeg:
-        return system_ffmpeg
+    if system_ffmpeg and system_ffprobe:
+        return system_ffmpeg, system_ffprobe
 
     try:
-        return imageio_ffmpeg.get_ffmpeg_exe()
+        ffmpeg, ffprobe = (
+            run.get_or_fetch_platform_executables_else_raise()
+        )
+
+        return ffmpeg, ffprobe
 
     except Exception as error:
         raise RuntimeError(
-            "FFmpeg could not be located."
+            "FFmpeg/FFprobe could not be installed automatically."
         ) from error
 
 
 def check_environment():
 
+    ffmpeg, ffprobe = get_ffmpeg_paths()
+
     return {
         "operating_system": get_operating_system(),
-        "ffmpeg": get_ffmpeg_path()
+        "ffmpeg": ffmpeg,
+        "ffprobe": ffprobe,
     }
